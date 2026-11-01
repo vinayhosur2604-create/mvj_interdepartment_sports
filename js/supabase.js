@@ -247,7 +247,7 @@ sortDepartments(list) {
     // -------------------------------------------------------------
     // SPORTS
     // -------------------------------------------------------------
-   
+
 async getSports() {
     if (!this.isSupabaseActive || !this.supabase) {
         throw new Error('Supabase is not connected.');
@@ -267,9 +267,6 @@ async getSports() {
 }
 
 
-      const raw = localStorage.getItem(STORAGE_KEYS.SPORTS);
-      return raw ? JSON.parse(raw) : window.MVJ_CONFIG.SPORTS;
-    }
 
     async getSportBySlug(slug) {
       const sports = await this.getSports();
