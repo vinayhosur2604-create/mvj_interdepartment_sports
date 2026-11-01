@@ -220,6 +220,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const alertBox = document.getElementById('loginAlertBox');
     const submitBtn = document.getElementById('loginSubmitBtn');
 
+    if (!window.MVJ_DB?.isSupabaseActive) {
+        alertBox.className = 'login-alert error';
+        alertBox.textContent =
+            'Supabase is not configured. Add the project URL and public anon key to js/config.js before signing in.';
+        alertBox.style.display = 'flex';
+    }
+
     // 3. Password visibility toggle
     toggleBtn.addEventListener('click', () => {
         const isPassword = passwordInput.type === 'password';

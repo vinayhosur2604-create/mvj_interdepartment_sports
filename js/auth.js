@@ -28,7 +28,13 @@
         // 2. Verify the current user and admin role
         async getAdminSession() {
 
-            const supabase = this.getClient();
+            const db = window.MVJ_DB;
+            if (!db || !db.isSupabaseActive || !db.supabase) {
+                this.currentUser = null;
+                return null;
+            }
+
+            const supabase = db.supabase;
 
             // Ask Supabase to verify the current user
             const { data, error } =

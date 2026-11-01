@@ -49,6 +49,12 @@ async function loadHomepageData() {
     // 1. Settings & Branding
     const settings = await db.getSettings();
     if (settings) {
+      const tournamentName = settings.tournament_name || window.MVJ_CONFIG.PORTAL_TITLE;
+      const tournamentNameEl = document.getElementById('heroTournamentName');
+      if (tournamentName) {
+        document.title = `${tournamentName} | MVJ College of Engineering`;
+        if (tournamentNameEl) tournamentNameEl.textContent = tournamentName;
+      }
       const heroTaglineEl = document.getElementById('heroTagline');
       const heroSubtitleEl = document.getElementById('heroSubtitle');
       const tournamentStatusEl = document.getElementById('tournamentStatusText');
@@ -283,12 +289,23 @@ function renderAnnouncements(announcements) {
 
   container.innerHTML = announcements.map((item) => `
     <div class="announcement-card">
+      ${item.image_url ? `<img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" class="announcement-image" loading="lazy">` : ''}
       <div class="announcement-meta">
-        <span class="announcement-category">${item.category || 'General'}</span>
-        <span class="announcement-date"><i class="fa-regular fa-calendar-days"></i> ${item.publish_date}</span>
+        <span class="announcement-category">${escapeHtml(item.category || 'General')}</span>
+        <span class="announcement-date"><i class="fa-regular fa-calendar-days"></i> ${escapeHtml(item.publish_date || '')}</span>
       </div>
-      <h3 class="announcement-title">${item.title}</h3>
-      <p class="announcement-desc">${item.description}</p>
+      <h3 class="announcement-title">${escapeHtml(item.title)}</h3>
+      <p class="announcement-desc">${escapeHtml(item.description)}</p>
     </div>
   `).join('');
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character]);
 }

@@ -39,7 +39,8 @@ The platform provides two completely separate, synchronized experiences:
      - Manage regular matches, semi-finals, and grand finals.
    - **Settings & Announcements (`admin/settings.html`):**
      - Publish tournament notices, postponements, and schedule updates.
-     - Configure tournament title, academic year, status, tagline, and Supabase credentials.
+     - Configure tournament title, academic year, status, tagline, and public announcements with optional shared photo uploads.
+     - Supabase URL and public anon key are deployment-wide settings in `js/config.js`.
 
 ---
 
@@ -83,8 +84,9 @@ The application is architected to work seamlessly with **Supabase PostgreSQL** w
    - Sets up Row Level Security (RLS) policies allowing public read and authenticated admin CRUD.
    - Seeds all 8 engineering departments, 10 sports, 18+ sample fixtures, and announcements.
    - Enables Realtime replication channels.
-3. Set the **Supabase Project URL** and **public anon key** in `js/config.js`, then deploy the updated files. The credentials saved from `admin/settings.html` are stored only in that browser and are not shared with student phones. Never put a `service_role` key in frontend code.
-4. All match, fixture, and published announcement updates will sync live to connected student devices. Mobile pages refresh when connectivity returns or the page is brought back into view.
+3. For an existing Supabase project, run `supabase_announcements_storage_migration.sql` in the SQL Editor. Do not rerun `supabase_schema.sql` on a live project; it drops and recreates tables. A fresh project can use `supabase_schema.sql`.
+4. Set the **Supabase Project URL** and **public anon key** in `js/config.js`, then deploy the updated files. Connection settings saved in one browser are not shared with student phones. Never put a `service_role` key in frontend code.
+5. Admin changes to departments, scores, sports, matches, announcements, and portal settings are written to Supabase and sent to connected devices in real time. Mobile pages refresh when connectivity returns or the page is brought back into view. Announcement photos are stored in the shared public `announcement-photos` bucket; admins can upload JPG, PNG, WebP, or GIF files up to 5 MB.
 
 ---
 

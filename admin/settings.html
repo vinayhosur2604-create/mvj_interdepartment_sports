@@ -143,7 +143,7 @@
             <div>
               <h2 class="admin-card-title">Championship Portal Settings</h2>
               <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">
-                Controls homepage branding, academic year, tournament status, and shared database credentials.
+                Controls homepage branding, academic year, and tournament status.
               </p>
             </div>
           </div>
@@ -191,21 +191,21 @@
             <div style="margin-top:24px; padding-top:20px; border-top:1px solid var(--border-color);">
               <h3 style="font-size:1.1rem; font-weight:800; color:var(--text-main); margin-bottom:6px;">
                 <i class="fa-solid fa-database" style="color:var(--blue-primary); margin-right:6px;"></i>
-                Supabase PostgreSQL Backend Configuration
+                Shared Database Connection
               </h3>
               <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:16px;">
-                Connect to your cloud Supabase database for multi-device realtime syncing across all students and admins.
+                These credentials are saved only in this browser. To connect all devices to one shared database, set the same Supabase project URL and public anon key in <code>js/config.js</code> before deployment.
               </p>
 
               <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
                 <div class="form-group">
-                  <label class="form-label" for="settingSupabaseUrl">Supabase Project URL</label>
+                  <label class="form-label" for="settingSupabaseUrl">Supabase Project URL (this browser)</label>
                   <input type="url" id="settingSupabaseUrl" class="form-input" placeholder="https://your-project-id.supabase.co">
                 </div>
 
                 <div class="form-group">
                   <label class="form-label" for="settingSupabaseKey">Supabase Anon Key (Public)</label>
-                  <input type="password" id="settingSupabaseKey" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                  <input type="password" id="settingSupabaseKey" class="form-input" placeholder="Configure shared key in js/config.js">
                 </div>
               </div>
             </div>
@@ -260,6 +260,13 @@
           <div class="form-group">
             <label class="form-label" for="addAnnDesc">Announcement Content *</label>
             <textarea id="addAnnDesc" class="form-textarea" rows="4" placeholder="Enter announcement text for students..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addAnnPhoto">Announcement Photo (optional)</label>
+            <input type="file" id="addAnnPhoto" class="form-input" accept="image/jpeg,image/png,image/webp,image/gif">
+            <small style="display:block;color:var(--text-secondary);margin-top:6px;">JPG, PNG, WebP, or GIF, up to 5 MB. Uploaded photos are shared with students on all devices.</small>
+            <img id="announcementPhotoPreview" alt="Announcement photo preview" hidden style="max-width:100%;max-height:180px;object-fit:contain;margin-top:12px;border-radius:8px;">
           </div>
 
           <div class="form-group" style="display:flex; align-items:center; gap:8px;">

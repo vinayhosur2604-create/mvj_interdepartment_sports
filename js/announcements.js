@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (window.MVJ_DB) {
     window.MVJ_DB.subscribe(() => {
       loadAnnouncementsTable();
+      loadTournamentSettings();
     });
   }
 });
@@ -63,13 +64,14 @@ function renderAnnouncementsTable(list) {
     return `
       <tr>
         <td>
-          <strong style="color:var(--text-main); font-size:0.98rem;">${a.title}</strong>
-          <div style="font-size:0.8rem; color:var(--text-secondary); line-height:1.4; margin-top:4px;">${a.description}</div>
+          ${a.image_url ? `<img src="${escapeHtml(a.image_url)}" alt="" style="width:72px;height:48px;object-fit:cover;border-radius:6px;margin-bottom:8px;">` : ''}
+          <strong style="color:var(--text-main); font-size:0.98rem;">${escapeHtml(a.title)}</strong>
+          <div style="font-size:0.8rem; color:var(--text-secondary); line-height:1.4; margin-top:4px;">${escapeHtml(a.description)}</div>
         </td>
         <td>
-          <span class="announcement-category">${a.category || 'General'}</span>
+          <span class="announcement-category">${escapeHtml(a.category || 'General')}</span>
         </td>
-        <td>${a.publish_date}</td>
+        <td>${escapeHtml(a.publish_date || '')}</td>
         <td>
           <span class="match-status-badge ${a.is_published ? 'status-completed' : 'status-upcoming'}">
             ${a.is_published ? 'Published' : 'Draft'}
@@ -100,12 +102,32 @@ function setupAddAnnouncementModal() {
     openBtn.addEventListener('click', () => {
       form.reset();
       document.getElementById('addAnnDate').value = new Date().toISOString().split('T')[0];
+      clearPhotoPreview();
       modal.classList.add('active');
     });
   }
 
   closeBtns?.forEach((btn) => {
-    btn.addEventListener('click', () => modal.classList.remove('active'));
+    btn.addEventListener('click', () => {
+      modal.classList.remove('active');
+      clearPhotoPreview();
+    });
+  });
+
+  const photoInput = document.getElementById('addAnnPhoto');
+  const photoPreview = document.getElementById('announcementPhotoPreview');
+  const clearPhotoPreview = () => {
+    if (photoPreview.src.startsWith('blob:')) URL.revokeObjectURL(photoPreview.src);
+    photoPreview.hidden = true;
+    photoPreview.removeAttribute('src');
+  };
+
+  photoInput?.addEventListener('change', () => {
+    clearPhotoPreview();
+    if (photoInput.files?.[0]) {
+      photoPreview.src = URL.createObjectURL(photoInput.files[0]);
+      photoPreview.hidden = false;
+    }
   });
 
   if (form) {
@@ -116,23 +138,53 @@ function setupAddAnnouncementModal() {
       const publish_date = document.getElementById('addAnnDate').value;
       const description = document.getElementById('addAnnDesc').value.trim();
       const is_published = document.getElementById('addAnnPublished').checked;
+      const photo = photoInput?.files?.[0];
+      const submitButton = form.querySelector('button[type="submit"]');
+      let uploadedPhoto = null;
 
       try {
+        submitButton.disabled = true;
+        uploadedPhoto = photo
+          ? await window.MVJ_DB.uploadAnnouncementPhoto(photo)
+          : {};
         await window.MVJ_DB.addAnnouncement({
           title,
           category,
           publish_date,
           description,
-          is_published
+          is_published,
+          ...uploadedPhoto
         });
 
+        uploadedPhoto = null;
         modal.classList.remove('active');
-        showToast('Tournament announcement published!', 'success');
+        form.reset();
+        clearPhotoPreview();
+        showToast('Announcement saved.', 'success');
       } catch (err) {
+        if (uploadedPhoto?.image_path) {
+          try {
+            await window.MVJ_DB.removeAnnouncementPhoto(uploadedPhoto.image_path);
+          } catch (cleanupError) {
+            console.error('Failed to clean up an unused announcement photo:', cleanupError);
+          }
+        }
         showToast(err.message, 'error');
+      } finally {
+        submitButton.disabled = false;
       }
     });
   }
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character]);
 }
 
 async function togglePublishAnnouncement(id, newStatus) {
@@ -171,7 +223,6 @@ async function loadTournamentSettings() {
       document.getElementById('settingHomepageSubtitle').value = settings.homepage_subtitle || '';
       document.getElementById('settingLogoRef').value = settings.logo_path || 'assets/images/mvj-logo.png';
 
-      // Supabase credentials
       document.getElementById('settingSupabaseUrl').value = localStorage.getItem('MVJ_SUPABASE_URL') || '';
       document.getElementById('settingSupabaseKey').value = localStorage.getItem('MVJ_SUPABASE_ANON_KEY') || '';
     }
@@ -193,14 +244,12 @@ function setupSettingsForm() {
     const homepage_tagline = document.getElementById('settingHomepageTagline').value.trim();
     const homepage_subtitle = document.getElementById('settingHomepageSubtitle').value.trim();
     const logo_path = document.getElementById('settingLogoRef').value.trim();
-
     const supabaseUrl = document.getElementById('settingSupabaseUrl').value.trim();
     const supabaseKey = document.getElementById('settingSupabaseKey').value.trim();
 
     if (supabaseUrl) localStorage.setItem('MVJ_SUPABASE_URL', supabaseUrl);
     if (supabaseKey) localStorage.setItem('MVJ_SUPABASE_ANON_KEY', supabaseKey);
-
-    if (window.MVJ_DB && typeof window.MVJ_DB.initSupabaseClient === 'function') {
+    if (supabaseUrl || supabaseKey) {
       window.MVJ_DB.initSupabaseClient();
     }
 

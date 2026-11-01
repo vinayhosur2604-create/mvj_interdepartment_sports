@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Real-time synchronization
   if (window.MVJ_DB) {
     window.MVJ_DB.subscribe(() => {
-      loadSportFixtures(currentSport);
+      initializeFixturesPage(activeSportSlug);
     });
   }
 });

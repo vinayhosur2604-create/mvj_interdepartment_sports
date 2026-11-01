@@ -80,9 +80,10 @@
       const config = window.MVJ_CONFIG || {};
       const savedUrl = (localStorage.getItem('MVJ_SUPABASE_URL') || '').trim();
       const savedKey = (localStorage.getItem('MVJ_SUPABASE_ANON_KEY') || '').trim();
-      const url = savedUrl || (config.SUPABASE_URL || '').trim();
-      const key = savedKey || (config.SUPABASE_ANON_KEY || '').trim();
-      return { url, key };
+      return {
+        url: savedUrl || (config.SUPABASE_URL || '').trim(),
+        key: savedKey || (config.SUPABASE_ANON_KEY || '').trim()
+      };
     }
 
     generateUuid() {
@@ -107,9 +108,31 @@
     async requireSupabaseWriteAccess() {
       if (!this.isSupabaseActive || !this.supabase) return false;
       if (!(await this.canWriteToSupabase())) {
-        throw new Error('A Supabase admin session is required to sync match and announcement changes.');
+        throw new Error('A Supabase admin session is required to sync changes across devices.');
       }
       return true;
+    }
+
+    async writeToSupabase(table, action, id, values) {
+      if (!(await this.requireSupabaseWriteAccess())) return false;
+
+      try {
+        let query = this.supabase.from(table);
+        if (action === 'insert') {
+          query = query.insert([values]);
+        } else if (action === 'update') {
+          query = query.update(values).eq('id', id);
+        } else {
+          query = query.delete().eq('id', id);
+        }
+
+        const { error } = await query;
+        if (error) throw error;
+        return true;
+      } catch (error) {
+        console.error(`Supabase ${action} failed for ${table}:`, error);
+        throw error;
+      }
     }
 
     initSupabaseClient() {
@@ -177,23 +200,26 @@
     // DEPARTMENTS
     // -------------------------------------------------------------
     
-async getDepartments() {
-    if (!this.isSupabaseActive || !this.supabase) {
-        throw new Error('Supabase is not connected.');
+    async getDepartments() {
+      if (this.isSupabaseActive && this.supabase) {
+        try {
+          const { data, error } = await this.supabase
+            .from('departments')
+            .select('*')
+            .order('points', { ascending: false });
+          if (error) throw error;
+
+          const departments = this.sortDepartments(data || []);
+          localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(departments));
+          return departments;
+        } catch (error) {
+          console.warn('Supabase getDepartments error, fallback local:', error);
+        }
+      }
+
+      const raw = localStorage.getItem(STORAGE_KEYS.DEPARTMENTS);
+      return this.sortDepartments(raw ? JSON.parse(raw) : (window.MVJ_CONFIG.DEPARTMENTS || []));
     }
-
-    const { data, error } = await this.supabase
-        .from('departments')
-        .select('*')
-        .order('points', { ascending: false });
-
-    if (error) {
-        console.error('Failed to fetch departments:', error);
-        throw error;
-    }
-
-    return this.sortDepartments(data || []);
-}
 
     // Tie-breaker: Points -> Gold -> Silver -> Bronze
     sortDepartments(list) {
@@ -217,29 +243,17 @@ async getDepartments() {
         color: dept.color || this.getRandomColor()
       };
 
-      if (this.isSupabaseActive && this.supabase && (await this.canWriteToSupabase())) {
-        try {
-          await this.supabase.from('departments').insert([newDept]);
-        } catch (e) {
-          console.warn('Supabase insert failed:', e);
-        }
-      }
-
-      const list = await this.getDepartments();
+      await this.writeToSupabase('departments', 'insert', newDept.id, newDept);
+      const raw = localStorage.getItem(STORAGE_KEYS.DEPARTMENTS);
+      const list = raw ? JSON.parse(raw) : [];
       list.push(newDept);
-      localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(list));
+      localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(this.sortDepartments(list)));
       this.notifyListeners({ action: 'addDepartment', item: newDept });
       return newDept;
     }
 
     async updateDepartment(id, updates) {
-      if (this.isSupabaseActive && this.supabase && (await this.canWriteToSupabase())) {
-        try {
-          await this.supabase.from('departments').update(updates).eq('id', id);
-        } catch (e) {
-          console.warn('Supabase update failed:', e);
-        }
-      }
+      await this.writeToSupabase('departments', 'update', id, updates);
 
       const raw = localStorage.getItem(STORAGE_KEYS.DEPARTMENTS);
       let list = raw ? JSON.parse(raw) : [];
@@ -250,13 +264,7 @@ async getDepartments() {
     }
 
     async deleteDepartment(id) {
-      if (this.isSupabaseActive && this.supabase && (await this.canWriteToSupabase())) {
-        try {
-          await this.supabase.from('departments').delete().eq('id', id);
-        } catch (e) {
-          console.warn('Supabase delete failed:', e);
-        }
-      }
+      await this.writeToSupabase('departments', 'delete', id);
 
       const raw = localStorage.getItem(STORAGE_KEYS.DEPARTMENTS);
       let list = raw ? JSON.parse(raw) : [];
@@ -270,23 +278,26 @@ async getDepartments() {
     // SPORTS
     // -------------------------------------------------------------
     
-async getSports() {
-    if (!this.isSupabaseActive || !this.supabase) {
-        throw new Error('Supabase is not connected.');
+    async getSports() {
+      if (this.isSupabaseActive && this.supabase) {
+        try {
+          const { data, error } = await this.supabase
+            .from('sports')
+            .select('*')
+            .order('name', { ascending: true });
+          if (error) throw error;
+
+          const sports = data || [];
+          localStorage.setItem(STORAGE_KEYS.SPORTS, JSON.stringify(sports));
+          return sports;
+        } catch (error) {
+          console.warn('Supabase getSports error, fallback local:', error);
+        }
+      }
+
+      const raw = localStorage.getItem(STORAGE_KEYS.SPORTS);
+      return raw ? JSON.parse(raw) : (window.MVJ_CONFIG.SPORTS || []);
     }
-
-    const { data, error } = await this.supabase
-        .from('sports')
-        .select('*')
-        .order('name', { ascending: true });
-
-    if (error) {
-        console.error('Failed to fetch sports:', error);
-        throw error;
-    }
-
-    return data || [];
-}
 
 
     async getSportBySlug(slug) {
@@ -308,15 +319,9 @@ async getSports() {
         current_stage: sport.current_stage || 'Upcoming'
       };
 
-      if (this.isSupabaseActive && this.supabase && (await this.canWriteToSupabase())) {
-        try {
-          await this.supabase.from('sports').insert([newSport]);
-        } catch (e) {
-          console.warn('Supabase addSport failed:', e);
-        }
-      }
-
-      const list = await this.getSports();
+      await this.writeToSupabase('sports', 'insert', newSport.id, newSport);
+      const raw = localStorage.getItem(STORAGE_KEYS.SPORTS);
+      const list = raw ? JSON.parse(raw) : [];
       list.push(newSport);
       localStorage.setItem(STORAGE_KEYS.SPORTS, JSON.stringify(list));
       this.notifyListeners({ action: 'addSport', item: newSport });
@@ -324,13 +329,7 @@ async getSports() {
     }
 
     async updateSport(id, updates) {
-      if (this.isSupabaseActive && this.supabase && (await this.canWriteToSupabase())) {
-        try {
-          await this.supabase.from('sports').update(updates).eq('id', id);
-        } catch (e) {
-          console.warn('Supabase updateSport failed:', e);
-        }
-      }
+      await this.writeToSupabase('sports', 'update', id, updates);
 
       const raw = localStorage.getItem(STORAGE_KEYS.SPORTS);
       let list = raw ? JSON.parse(raw) : [];
@@ -354,13 +353,7 @@ async getSports() {
         );
       }
 
-      if (this.isSupabaseActive && this.supabase && (await this.canWriteToSupabase())) {
-        try {
-          await this.supabase.from('sports').delete().eq('id', id);
-        } catch (e) {
-          console.warn('Supabase deleteSport failed:', e);
-        }
-      }
+      await this.writeToSupabase('sports', 'delete', id);
 
       const raw = localStorage.getItem(STORAGE_KEYS.SPORTS);
       let list = raw ? JSON.parse(raw) : [];
@@ -378,9 +371,16 @@ async getSports() {
       let loadedFromSupabase = false;
       if (this.isSupabaseActive && this.supabase) {
         try {
-          const { data, error } = await this.supabase.from('matches').select('*');
+          const { data, error } = await this.supabase
+            .from('matches')
+            .select('*, sports(slug)');
           if (error) throw error;
-          matches = data || [];
+          matches = (data || []).map((match) => {
+            const sport = Array.isArray(match.sports) ? match.sports[0] : match.sports;
+            const normalizedMatch = { ...match, sport_slug: match.sport_slug || sport?.slug || '' };
+            delete normalizedMatch.sports;
+            return normalizedMatch;
+          });
           localStorage.setItem(STORAGE_KEYS.MATCHES, JSON.stringify(matches));
           loadedFromSupabase = true;
         } catch (err) {
@@ -545,18 +545,12 @@ async getSports() {
         description: item.description,
         category: item.category || 'General',
         publish_date: item.publish_date || new Date().toISOString().split('T')[0],
-        is_published: item.is_published !== undefined ? item.is_published : true
+        is_published: item.is_published !== undefined ? item.is_published : true,
+        image_url: item.image_url || '',
+        image_path: item.image_path || ''
       };
 
-      if (await this.requireSupabaseWriteAccess()) {
-        try {
-          const { error } = await this.supabase.from('announcements').insert([newAnn]);
-          if (error) throw error;
-        } catch (e) {
-          console.error('Supabase addAnnouncement failed:', e);
-          throw e;
-        }
-      }
+      await this.writeToSupabase('announcements', 'insert', newAnn.id, newAnn);
 
       const raw = localStorage.getItem(STORAGE_KEYS.ANNOUNCEMENTS);
       const list = raw ? JSON.parse(raw) : [];
@@ -567,15 +561,7 @@ async getSports() {
     }
 
     async updateAnnouncement(id, updates) {
-      if (await this.requireSupabaseWriteAccess()) {
-        try {
-          const { error } = await this.supabase.from('announcements').update(updates).eq('id', id);
-          if (error) throw error;
-        } catch (e) {
-          console.error('Supabase updateAnnouncement failed:', e);
-          throw e;
-        }
-      }
+      await this.writeToSupabase('announcements', 'update', id, updates);
 
       const raw = localStorage.getItem(STORAGE_KEYS.ANNOUNCEMENTS);
       let list = raw ? JSON.parse(raw) : [];
@@ -586,21 +572,66 @@ async getSports() {
     }
 
     async deleteAnnouncement(id) {
-      if (await this.requireSupabaseWriteAccess()) {
-        try {
-          const { error } = await this.supabase.from('announcements').delete().eq('id', id);
-          if (error) throw error;
-        } catch (e) {
-          console.error('Supabase deleteAnnouncement failed:', e);
-          throw e;
-        }
-      }
-
       const raw = localStorage.getItem(STORAGE_KEYS.ANNOUNCEMENTS);
       let list = raw ? JSON.parse(raw) : [];
+      const announcement = list.find((item) => item.id === id);
+      const synced = await this.writeToSupabase('announcements', 'delete', id);
       list = list.filter((a) => a.id !== id);
       localStorage.setItem(STORAGE_KEYS.ANNOUNCEMENTS, JSON.stringify(list));
       this.notifyListeners({ action: 'deleteAnnouncement', id });
+
+      if (synced && announcement?.image_path) {
+        const { error } = await this.supabase.storage
+          .from('announcement-photos')
+          .remove([announcement.image_path]);
+        if (error) {
+          console.error('Announcement was deleted but its photo cleanup failed:', error);
+          throw new Error('Announcement deleted, but its uploaded photo could not be removed.');
+        }
+      }
+      return true;
+    }
+
+    async uploadAnnouncementPhoto(file) {
+      if (!(await this.requireSupabaseWriteAccess())) {
+        throw new Error('Connect to Supabase before uploading an announcement photo.');
+      }
+      if (!file || !['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) {
+        throw new Error('Choose a JPG, PNG, WebP, or GIF image.');
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error('Announcement photos must be 5 MB or smaller.');
+      }
+
+      const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-');
+      const path = `${this.generateUuid()}-${safeFileName}`;
+      const { data, error } = await this.supabase.storage
+        .from('announcement-photos')
+        .upload(path, file, {
+          cacheControl: '3600',
+          contentType: file.type,
+          upsert: false
+        });
+      if (error) {
+        console.error('Supabase announcement photo upload failed:', error);
+        throw error;
+      }
+
+      const { data: { publicUrl } } = this.supabase.storage
+        .from('announcement-photos')
+        .getPublicUrl(data.path);
+      return { image_url: publicUrl, image_path: data.path };
+    }
+
+    async removeAnnouncementPhoto(path) {
+      if (!(await this.requireSupabaseWriteAccess())) return false;
+      const { error } = await this.supabase.storage
+        .from('announcement-photos')
+        .remove([path]);
+      if (error) {
+        console.error('Supabase announcement photo removal failed:', error);
+        throw error;
+      }
       return true;
     }
 
@@ -615,7 +646,18 @@ async getSports() {
             .select('*')
             .limit(1)
             .maybeSingle();
-          if (!error && data) return data;
+          if (error) throw error;
+          const config = window.MVJ_CONFIG || {};
+          const settings = data || {
+            tournament_name: config.PORTAL_TITLE || 'MVJ Interdepartment Sports',
+            academic_year: config.ACADEMIC_YEAR || '2026-2027',
+            tournament_status: config.TOURNAMENT_STATUS || 'Ongoing',
+            homepage_tagline: config.TAGLINE || 'ONE COLLEGE. MULTIPLE DEPARTMENTS. ONE CHAMPION.',
+            homepage_subtitle: config.SUBTITLE || 'Celebrating sportsmanship, teamwork and interdepartmental excellence.',
+            logo_path: config.LOGO_PATH || 'assets/images/mvj-logo.png'
+          };
+          localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+          return settings;
         } catch (e) {
           console.warn('Supabase getSettings error:', e);
         }
@@ -639,21 +681,25 @@ async getSports() {
         updated_at: new Date().toISOString()
       };
 
-      if (this.isSupabaseActive && this.supabase && (await this.canWriteToSupabase())) {
+      if (await this.requireSupabaseWriteAccess()) {
         try {
-          const { data: existing } = await this.supabase
+          const { data: existing, error: selectError } = await this.supabase
             .from('tournament_settings')
             .select('id')
             .limit(1)
             .maybeSingle();
+          if (selectError) throw selectError;
 
           if (existing?.id) {
-            await this.supabase.from('tournament_settings').update(normalizedSettings).eq('id', existing.id);
+            const { error } = await this.supabase.from('tournament_settings').update(normalizedSettings).eq('id', existing.id);
+            if (error) throw error;
           } else {
-            await this.supabase.from('tournament_settings').insert([{ ...normalizedSettings, id: this.generateUuid() }]);
+            const { error } = await this.supabase.from('tournament_settings').insert([{ ...normalizedSettings, id: this.generateUuid() }]);
+            if (error) throw error;
           }
         } catch (e) {
-          console.warn('Supabase updateSettings failed:', e);
+          console.error('Supabase updateSettings failed:', e);
+          throw e;
         }
       }
 

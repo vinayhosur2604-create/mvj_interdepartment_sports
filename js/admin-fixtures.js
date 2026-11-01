@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (window.MVJ_DB) {
     window.MVJ_DB.subscribe(() => {
-      loadFixturesTable();
+      initializeAdminFixtures();
     });
   }
 });
@@ -39,6 +39,7 @@ function setupAdminSessionUI() {
 let cachedMatches = [];
 let cachedSports = [];
 let cachedDepartments = [];
+let adminFixtureFiltersInitialized = false;
 
 async function initializeAdminFixtures() {
   const db = window.MVJ_DB;
@@ -56,10 +57,12 @@ async function initializeAdminFixtures() {
     populateSportDropdowns(sports);
     populateTeamDropdowns(departments);
 
-    // Setup filter listeners
-    document.getElementById('filterSportSelect')?.addEventListener('change', loadFixturesTable);
-    document.getElementById('filterStageSelect')?.addEventListener('change', loadFixturesTable);
-    document.getElementById('filterStatusSelect')?.addEventListener('change', loadFixturesTable);
+    if (!adminFixtureFiltersInitialized) {
+      document.getElementById('filterSportSelect')?.addEventListener('change', loadFixturesTable);
+      document.getElementById('filterStageSelect')?.addEventListener('change', loadFixturesTable);
+      document.getElementById('filterStatusSelect')?.addEventListener('change', loadFixturesTable);
+      adminFixtureFiltersInitialized = true;
+    }
 
     await loadFixturesTable();
   } catch (err) {

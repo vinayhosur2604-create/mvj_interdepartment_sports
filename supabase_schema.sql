@@ -72,6 +72,8 @@ CREATE TABLE announcements (
     category TEXT DEFAULT 'General', -- 'Notice', 'Schedule Change', 'Postponement', 'Result'
     publish_date DATE NOT NULL DEFAULT CURRENT_DATE,
     is_published BOOLEAN DEFAULT TRUE,
+    image_url TEXT DEFAULT '',
+    image_path TEXT DEFAULT '',
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -161,6 +163,43 @@ CREATE POLICY "Admins have full access to settings" ON tournament_settings
 CREATE POLICY "Admins can view profiles" ON admin_profiles
     FOR SELECT TO authenticated
     USING (true);
+
+-- Public announcement images; only authenticated users can upload or remove them.
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+    'announcement-photos',
+    'announcement-photos',
+    TRUE,
+    5242880,
+    ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+)
+ON CONFLICT (id) DO UPDATE SET
+    public = EXCLUDED.public,
+    file_size_limit = EXCLUDED.file_size_limit,
+    allowed_mime_types = EXCLUDED.allowed_mime_types;
+
+CREATE POLICY "Public users can view announcement photos" ON storage.objects
+    FOR SELECT USING (bucket_id = 'announcement-photos');
+
+CREATE POLICY "Authenticated users can upload announcement photos" ON storage.objects
+    FOR INSERT TO authenticated
+    WITH CHECK (
+        bucket_id = 'announcement-photos'
+        AND EXISTS (
+            SELECT 1 FROM public.admin_profiles
+            WHERE user_id = auth.uid() AND role = 'admin'
+        )
+    );
+
+CREATE POLICY "Authenticated users can delete announcement photos" ON storage.objects
+    FOR DELETE TO authenticated
+    USING (
+        bucket_id = 'announcement-photos'
+        AND EXISTS (
+            SELECT 1 FROM public.admin_profiles
+            WHERE user_id = auth.uid() AND role = 'admin'
+        )
+    );
 
 -- ====================================================================
 -- 4. REALTIME REPLICATION SETUP
