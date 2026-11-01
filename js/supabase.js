@@ -38,6 +38,16 @@
           this.notifyListeners({ source: 'localStorage', key: e.key });
         }
       });
+
+      window.addEventListener('online', () => {
+        this.notifyListeners({ source: 'online' });
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          this.notifyListeners({ source: 'visibility' });
+        }
+      });
     }
 
     initLocalStore() {
@@ -94,6 +104,14 @@
       }
     }
 
+    async requireSupabaseWriteAccess() {
+      if (!this.isSupabaseActive || !this.supabase) return false;
+      if (!(await this.canWriteToSupabase())) {
+        throw new Error('A Supabase admin session is required to sync match and announcement changes.');
+      }
+      return true;
+    }
+
     initSupabaseClient() {
       const { url, key } = this.getSupabaseCredentials();
       const isValidUrl = Boolean(url && url.startsWith('https://') && !url.includes('xyzcompany'));
@@ -126,7 +144,11 @@
             console.log('Realtime change received from Supabase:', payload);
             this.notifyListeners({ source: 'supabase-realtime', payload });
           })
-          .subscribe();
+          .subscribe((status, error) => {
+            if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+              console.warn('Supabase realtime subscription failed:', error || status);
+            }
+          });
       } catch (e) {
         console.warn('Realtime subscription error:', e);
       }
@@ -353,27 +375,28 @@ async getSports() {
     // -------------------------------------------------------------
     async getMatches(filters = {}) {
       let matches = [];
+      let loadedFromSupabase = false;
       if (this.isSupabaseActive && this.supabase) {
         try {
-          let query = this.supabase.from('matches').select('*');
-          if (filters.sport_id) query = query.eq('sport_id', filters.sport_id);
-          if (filters.stage) query = query.eq('stage', filters.stage);
-          if (filters.status) query = query.eq('status', filters.status);
-          const { data, error } = await query;
-          if (!error && data && data.length > 0) {
-            matches = data;
-          }
+          const { data, error } = await this.supabase.from('matches').select('*');
+          if (error) throw error;
+          matches = data || [];
+          localStorage.setItem(STORAGE_KEYS.MATCHES, JSON.stringify(matches));
+          loadedFromSupabase = true;
         } catch (err) {
           console.warn('Supabase getMatches error, fallback local:', err);
         }
       }
 
-      if (matches.length === 0) {
+      if (!loadedFromSupabase) {
         const raw = localStorage.getItem(STORAGE_KEYS.MATCHES);
         matches = raw ? JSON.parse(raw) : window.MVJ_CONFIG.MATCHES;
       }
 
       // Apply client-side filters
+      if (filters.sport_id && filters.sport_id !== 'All') {
+        matches = matches.filter((m) => m.sport_id === filters.sport_id);
+      }
       if (filters.sport_slug) {
         matches = matches.filter(
           (m) => m.sport_slug?.toLowerCase() === filters.sport_slug.toLowerCase()
@@ -400,7 +423,9 @@ async getSports() {
     async addMatch(match) {
       let sportId = match.sport_id || null;
       if (!sportId && match.sport_slug) {
-        const sports = await this.getSports();
+        const sports = this.isSupabaseActive && this.supabase
+          ? await this.getSports()
+          : JSON.parse(localStorage.getItem(STORAGE_KEYS.SPORTS) || '[]');
         const sport = sports.find((s) => s.slug?.toLowerCase() === match.sport_slug.toLowerCase());
         sportId = sport?.id || null;
       }
@@ -425,11 +450,15 @@ async getSports() {
         result: match.result || ''
       };
 
-      if (this.isSupabaseActive && this.supabase && (await this.canWriteToSupabase())) {
+      if (await this.requireSupabaseWriteAccess()) {
         try {
-          await this.supabase.from('matches').insert([newMatch]);
+          const supabaseMatch = { ...newMatch };
+          delete supabaseMatch.sport_slug;
+          const { error } = await this.supabase.from('matches').insert([supabaseMatch]);
+          if (error) throw error;
         } catch (e) {
-          console.warn('Supabase addMatch failed:', e);
+          console.error('Supabase addMatch failed:', e);
+          throw e;
         }
       }
 
@@ -442,11 +471,13 @@ async getSports() {
     }
 
     async updateMatch(id, updates) {
-      if (this.isSupabaseActive && this.supabase && (await this.canWriteToSupabase())) {
+      if (await this.requireSupabaseWriteAccess()) {
         try {
-          await this.supabase.from('matches').update(updates).eq('id', id);
+          const { error } = await this.supabase.from('matches').update(updates).eq('id', id);
+          if (error) throw error;
         } catch (e) {
-          console.warn('Supabase updateMatch failed:', e);
+          console.error('Supabase updateMatch failed:', e);
+          throw e;
         }
       }
 
@@ -459,11 +490,13 @@ async getSports() {
     }
 
     async deleteMatch(id) {
-      if (this.isSupabaseActive && this.supabase && (await this.canWriteToSupabase())) {
+      if (await this.requireSupabaseWriteAccess()) {
         try {
-          await this.supabase.from('matches').delete().eq('id', id);
+          const { error } = await this.supabase.from('matches').delete().eq('id', id);
+          if (error) throw error;
         } catch (e) {
-          console.warn('Supabase deleteMatch failed:', e);
+          console.error('Supabase deleteMatch failed:', e);
+          throw e;
         }
       }
 
@@ -481,14 +514,19 @@ async getSports() {
     async getAnnouncements(publishedOnly = true) {
       if (this.isSupabaseActive && this.supabase) {
         try {
-          let q = this.supabase.from('announcements').select('*').order('created_at', { ascending: false });
-          if (publishedOnly) q = q.eq('is_published', true);
-          const { data, error } = await q;
-          if (!error && data && data.length > 0) {
-            return data;
-          }
+          const { data, error } = await this.supabase
+            .from('announcements')
+            .select('*')
+            .order('created_at', { ascending: false });
+          if (error) throw error;
+
+          const announcements = data || [];
+          localStorage.setItem(STORAGE_KEYS.ANNOUNCEMENTS, JSON.stringify(announcements));
+          return publishedOnly
+            ? announcements.filter((a) => a.is_published !== false)
+            : announcements;
         } catch (e) {
-          console.warn('Supabase getAnnouncements error:', e);
+          console.warn('Supabase getAnnouncements error, fallback local:', e);
         }
       }
 
@@ -510,11 +548,13 @@ async getSports() {
         is_published: item.is_published !== undefined ? item.is_published : true
       };
 
-      if (this.isSupabaseActive && this.supabase && (await this.canWriteToSupabase())) {
+      if (await this.requireSupabaseWriteAccess()) {
         try {
-          await this.supabase.from('announcements').insert([newAnn]);
+          const { error } = await this.supabase.from('announcements').insert([newAnn]);
+          if (error) throw error;
         } catch (e) {
-          console.warn('Supabase addAnnouncement failed:', e);
+          console.error('Supabase addAnnouncement failed:', e);
+          throw e;
         }
       }
 
@@ -527,11 +567,13 @@ async getSports() {
     }
 
     async updateAnnouncement(id, updates) {
-      if (this.isSupabaseActive && this.supabase && (await this.canWriteToSupabase())) {
+      if (await this.requireSupabaseWriteAccess()) {
         try {
-          await this.supabase.from('announcements').update(updates).eq('id', id);
+          const { error } = await this.supabase.from('announcements').update(updates).eq('id', id);
+          if (error) throw error;
         } catch (e) {
-          console.warn('Supabase updateAnnouncement failed:', e);
+          console.error('Supabase updateAnnouncement failed:', e);
+          throw e;
         }
       }
 
@@ -544,11 +586,13 @@ async getSports() {
     }
 
     async deleteAnnouncement(id) {
-      if (this.isSupabaseActive && this.supabase && (await this.canWriteToSupabase())) {
+      if (await this.requireSupabaseWriteAccess()) {
         try {
-          await this.supabase.from('announcements').delete().eq('id', id);
+          const { error } = await this.supabase.from('announcements').delete().eq('id', id);
+          if (error) throw error;
         } catch (e) {
-          console.warn('Supabase deleteAnnouncement failed:', e);
+          console.error('Supabase deleteAnnouncement failed:', e);
+          throw e;
         }
       }
 

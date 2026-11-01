@@ -83,8 +83,8 @@ The application is architected to work seamlessly with **Supabase PostgreSQL** w
    - Sets up Row Level Security (RLS) policies allowing public read and authenticated admin CRUD.
    - Seeds all 8 engineering departments, 10 sports, 18+ sample fixtures, and announcements.
    - Enables Realtime replication channels.
-3. In the Admin Dashboard (`admin/settings.html`), paste your **Supabase Project URL** and **Anon Key** and click Save.
-4. All updates made by the administrator will now sync live across all connected student devices without manual page reloads!
+3. Set the **Supabase Project URL** and **public anon key** in `js/config.js`, then deploy the updated files. The credentials saved from `admin/settings.html` are stored only in that browser and are not shared with student phones. Never put a `service_role` key in frontend code.
+4. All match, fixture, and published announcement updates will sync live to connected student devices. Mobile pages refresh when connectivity returns or the page is brought back into view.
 
 ---
 
