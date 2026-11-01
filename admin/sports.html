@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Sports | MVJ INTERDEPARTMENT SPORTS</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand">
+        <img src="../assets/images/mvj-logo.png" alt="MVJ College Logo" class="sidebar-logo">
+        <div class="sidebar-title-group">
+          <div class="sidebar-title">MVJ SPORTS</div>
+          <div class="sidebar-subtitle">ADMIN CONTROL PORTAL</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard Overview</span>
+        </a>
+        <a href="departments.html" class="sidebar-link">
+          <i class="fa-solid fa-building-columns"></i>
+          <span>Manage Departments</span>
+        </a>
+        <a href="departments.html#quickScoresCard" class="sidebar-link">
+          <i class="fa-solid fa-table-list"></i>
+          <span>Department Scores</span>
+        </a>
+        <a href="sports.html" class="sidebar-link active">
+          <i class="fa-solid fa-medal"></i>
+          <span>Manage Sports</span>
+        </a>
+        <a href="fixtures.html" class="sidebar-link">
+          <i class="fa-solid fa-calendar-days"></i>
+          <span>Manage Fixtures</span>
+        </a>
+        <a href="fixtures.html?stage=Semi-Final" class="sidebar-link">
+          <i class="fa-solid fa-fire"></i>
+          <span>Semi-Finals</span>
+        </a>
+        <a href="fixtures.html?stage=Grand+Final" class="sidebar-link">
+          <i class="fa-solid fa-trophy"></i>
+          <span>Grand Final</span>
+        </a>
+        <a href="settings.html#announcementsSection" class="sidebar-link">
+          <i class="fa-solid fa-bullhorn"></i>
+          <span>Announcements</span>
+        </a>
+        <a href="settings.html" class="sidebar-link">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Tournament Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn" id="adminLogoutBtn">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Log Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div class="admin-topbar-left">
+          <button class="admin-mobile-toggle" id="adminMobileToggle" aria-label="Toggle Sidebar">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="admin-page-title">Manage Sports Competitions</h1>
+        </div>
+
+        <div class="admin-topbar-right">
+          <a href="../sports.html" target="_blank" class="btn-view-site">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> View Public Sports
+          </a>
+          <div class="admin-user-pill">
+            <div class="admin-avatar"><i class="fa-solid fa-user-shield"></i></div>
+            <div class="admin-user-info">
+              <span class="admin-name" id="adminUserName">Sports Director</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="admin-content">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h2 class="admin-card-title">Active Tournament Sports</h2>
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">
+                Add new disciplines or update active tournament stages. Newly added sports become immediately available in match fixtures.
+              </p>
+            </div>
+            <button class="btn btn-primary" id="openAddSportModalBtn">
+              <i class="fa-solid fa-plus"></i> + ADD NEW SPORT
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">Icon</th>
+                  <th>Sport Name & Description</th>
+                  <th>Slug URL</th>
+                  <th>Current Stage</th>
+                  <th>Matches Count</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="sportsTableBody">
+                <!-- Dynamically rendered by admin-sports.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: ADD NEW SPORT
+       ==================================================================== -->
+  <div class="modal-backdrop" id="addSportModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-trophy"></i> + ADD NEW SPORT</h3>
+        <button class="modal-close-btn modal-close-trigger"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="addSportForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="addSportName">Sport Name *</label>
+            <input type="text" id="addSportName" class="form-input" placeholder="e.g. Lawn Tennis" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addSportSlug">URL Slug (lowercase identifier)</label>
+            <input type="text" id="addSportSlug" class="form-input" placeholder="e.g. lawn-tennis (auto-generated if left blank)">
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="addSportIcon">FontAwesome Icon Class</label>
+              <input type="text" id="addSportIcon" class="form-input" placeholder="e.g. fa-baseball-bat-ball" value="fa-trophy">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="addSportStage">Current Tournament Stage</label>
+              <select id="addSportStage" class="form-select">
+                <option value="Upcoming">Upcoming</option>
+                <option value="Regular Matches" selected>Regular Matches</option>
+                <option value="Quarter-Finals">Quarter-Finals</option>
+                <option value="Semi-Finals">Semi-Finals</option>
+                <option value="Grand Final">Grand Final</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addSportImage">Banner Image URL (optional)</label>
+            <input type="url" id="addSportImage" class="form-input" placeholder="https://images.unsplash.com/...">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addSportDesc">Sport Description (optional)</label>
+            <textarea id="addSportDesc" class="form-textarea" rows="3" placeholder="Brief rules, format or venue notes..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close-trigger">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Sport</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: EDIT SPORT
+       ==================================================================== -->
+  <div class="modal-backdrop" id="editSportModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-pen-to-square"></i> Edit Sport</h3>
+        <button class="modal-close-btn modal-close-trigger"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="editSportForm">
+        <input type="hidden" id="editSportId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="editSportName">Sport Name *</label>
+            <input type="text" id="editSportName" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="editSportSlug">URL Slug *</label>
+            <input type="text" id="editSportSlug" class="form-input" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="editSportIcon">FontAwesome Icon Class</label>
+              <input type="text" id="editSportIcon" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="editSportStage">Current Tournament Stage</label>
+              <select id="editSportStage" class="form-select">
+                <option value="Upcoming">Upcoming</option>
+                <option value="Regular Matches">Regular Matches</option>
+                <option value="Quarter-Finals">Quarter-Finals</option>
+                <option value="Semi-Finals">Semi-Finals</option>
+                <option value="Grand Final">Grand Final</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="editSportImage">Banner Image URL</label>
+            <input type="url" id="editSportImage" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="editSportDesc">Sport Description</label>
+            <textarea id="editSportDesc" class="form-textarea" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close-trigger">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Sport</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/admin-sports.js"></script>
+</body>
+</html>

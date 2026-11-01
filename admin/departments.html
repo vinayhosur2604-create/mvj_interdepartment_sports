@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Departments & Scores | MVJ INTERDEPARTMENT SPORTS</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand">
+        <img src="../assets/images/mvj-logo.png" alt="MVJ College Logo" class="sidebar-logo">
+        <div class="sidebar-title-group">
+          <div class="sidebar-title">MVJ SPORTS</div>
+          <div class="sidebar-subtitle">ADMIN CONTROL PORTAL</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard Overview</span>
+        </a>
+        <a href="departments.html" class="sidebar-link active">
+          <i class="fa-solid fa-building-columns"></i>
+          <span>Manage Departments</span>
+        </a>
+        <a href="#quickScoresCard" class="sidebar-link">
+          <i class="fa-solid fa-table-list"></i>
+          <span>Department Scores</span>
+        </a>
+        <a href="sports.html" class="sidebar-link">
+          <i class="fa-solid fa-medal"></i>
+          <span>Manage Sports</span>
+        </a>
+        <a href="fixtures.html" class="sidebar-link">
+          <i class="fa-solid fa-calendar-days"></i>
+          <span>Manage Fixtures</span>
+        </a>
+        <a href="fixtures.html?stage=Semi-Final" class="sidebar-link">
+          <i class="fa-solid fa-fire"></i>
+          <span>Semi-Finals</span>
+        </a>
+        <a href="fixtures.html?stage=Grand+Final" class="sidebar-link">
+          <i class="fa-solid fa-trophy"></i>
+          <span>Grand Final</span>
+        </a>
+        <a href="settings.html#announcementsSection" class="sidebar-link">
+          <i class="fa-solid fa-bullhorn"></i>
+          <span>Announcements</span>
+        </a>
+        <a href="settings.html" class="sidebar-link">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Tournament Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn" id="adminLogoutBtn">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Log Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div class="admin-topbar-left">
+          <button class="admin-mobile-toggle" id="adminMobileToggle" aria-label="Toggle Sidebar">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="admin-page-title">Department Management & Scoreboard</h1>
+        </div>
+
+        <div class="admin-topbar-right">
+          <a href="../index.html#scoreboardSection" target="_blank" class="btn-view-site">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> View Public Leaderboard
+          </a>
+          <div class="admin-user-pill">
+            <div class="admin-avatar"><i class="fa-solid fa-user-shield"></i></div>
+            <div class="admin-user-info">
+              <span class="admin-name" id="adminUserName">Sports Director</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="admin-content">
+
+        <!-- ==============================================================
+             SECTION 10: MANAGE DEPARTMENTS (FULL CRUD)
+             ============================================================== -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h2 class="admin-card-title">Participating Engineering Departments</h2>
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">
+                Add, edit, and configure department profiles. Leaderboard auto-ranks by Points, then Gold, Silver, Bronze.
+              </p>
+            </div>
+            <button class="btn btn-primary" id="openAddDeptModalBtn">
+              <i class="fa-solid fa-plus"></i> Add Department
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">Rank</th>
+                  <th>Department Name</th>
+                  <th>Total Points</th>
+                  <th>Gold Medals</th>
+                  <th>Silver Medals</th>
+                  <th>Bronze Medals</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="departmentsTableBody">
+                <!-- Populated dynamically by departments.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==============================================================
+             SECTION 11: QUICK SCORE MANAGEMENT TABLE
+             ============================================================== -->
+        <div class="admin-card" id="quickScoresCard">
+          <div class="admin-card-header">
+            <div>
+              <h2 class="admin-card-title">Quick Department Score Editor</h2>
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">
+                Directly adjust tournament points and medal tallies. Changes immediately update public standings and charts.
+              </p>
+            </div>
+            <span class="section-badge" style="margin-bottom:0; font-size:0.75rem;">
+              <i class="fa-solid fa-bolt"></i> Fast Save
+            </span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Department</th>
+                  <th style="width: 130px;">Points</th>
+                  <th style="width: 110px;">Gold 🥇</th>
+                  <th style="width: 110px;">Silver 🥈</th>
+                  <th style="width: 110px;">Bronze 🥉</th>
+                  <th style="width: 120px;">Save</th>
+                </tr>
+              </thead>
+              <tbody id="quickScoresTableBody">
+                <!-- Populated dynamically by departments.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: ADD NEW DEPARTMENT
+       ==================================================================== -->
+  <div class="modal-backdrop" id="addDeptModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-building-columns"></i> Add New Department</h3>
+        <button class="modal-close-btn modal-close-trigger"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="addDeptForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="addDeptName">Department Full Name *</label>
+            <input type="text" id="addDeptName" class="form-input" placeholder="e.g. Aeronautical Engineering" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addDeptCode">Department Short Code *</label>
+            <input type="text" id="addDeptCode" class="form-input" placeholder="e.g. AERO" maxlength="6" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="addDeptPoints">Starting Points</label>
+              <input type="number" id="addDeptPoints" class="form-input" value="0" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="addDeptColor">Accent Color</label>
+              <input type="color" id="addDeptColor" class="form-input" value="#174EA6" style="height:44px; padding:2px 6px;">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label" for="addDeptGold">Gold 🥇</label>
+              <input type="number" id="addDeptGold" class="form-input" value="0" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="addDeptSilver">Silver 🥈</label>
+              <input type="number" id="addDeptSilver" class="form-input" value="0" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="addDeptBronze">Bronze 🥉</label>
+              <input type="number" id="addDeptBronze" class="form-input" value="0" min="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close-trigger">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Department</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: EDIT DEPARTMENT
+       ==================================================================== -->
+  <div class="modal-backdrop" id="editDeptModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-pen-to-square"></i> Edit Department</h3>
+        <button class="modal-close-btn modal-close-trigger"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="editDeptForm">
+        <input type="hidden" id="editDeptId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="editDeptName">Department Full Name *</label>
+            <input type="text" id="editDeptName" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="editDeptCode">Department Short Code *</label>
+            <input type="text" id="editDeptCode" class="form-input" maxlength="6" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="editDeptPoints">Total Points</label>
+              <input type="number" id="editDeptPoints" class="form-input" min="0" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editDeptColor">Accent Color</label>
+              <input type="color" id="editDeptColor" class="form-input" style="height:44px; padding:2px 6px;">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label" for="editDeptGold">Gold 🥇</label>
+              <input type="number" id="editDeptGold" class="form-input" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editDeptSilver">Silver 🥈</label>
+              <input type="number" id="editDeptSilver" class="form-input" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editDeptBronze">Bronze 🥉</label>
+              <input type="number" id="editDeptBronze" class="form-input" min="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close-trigger">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Department</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/departments.js"></script>
+</body>
+</html>

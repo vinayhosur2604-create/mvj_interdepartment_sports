@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MVJ INTERDEPARTMENT SPORTS | MVJ College of Engineering</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- ====================================================================
+       OFFICIAL MVJ COLLEGE BRANDING HEADER
+       ==================================================================== -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <!-- Official Branding Block: Logo on Left + Title Beside + Subtitle Below -->
+      <a href="index.html" class="brand-link" aria-label="MVJ Interdepartment Sports">
+        <img src="assets/images/mvj-logo.png" alt="MVJ College of Engineering" class="brand-logo-img">
+        <div class="brand-text-block">
+          <div class="brand-title-mvj">MVJ<br>INTERDEPARTMENT SPORTS</div>
+          <div class="brand-subtitle-college">MVJ COLLEGE OF ENGINEERING</div>
+        </div>
+      </a>
+
+      <!-- Mobile Hamburger Toggle -->
+      <button class="mobile-toggle" id="mobileNavToggle" aria-label="Toggle Navigation Menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <!-- Navigation Links -->
+      <nav>
+        <ul class="nav-menu" id="navMenu">
+          <li class="nav-item"><a href="index.html" class="active"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li class="nav-item"><a href="#scoreboardSection"><i class="fa-solid fa-trophy"></i> Department Scoreboard</a></li>
+          <li class="nav-item"><a href="sports.html"><i class="fa-solid fa-medal"></i> Sports</a></li>
+          <li class="nav-item"><a href="fixtures.html"><i class="fa-solid fa-calendar-days"></i> Fixtures</a></li>
+          <li class="nav-item"><a href="#announcementsSection"><i class="fa-solid fa-bullhorn"></i> Tournament Updates</a></li>
+          <li class="nav-item">
+            <a href="admin/login.html" class="admin-nav-btn"><i class="fa-solid fa-lock"></i> Admin Login</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ====================================================================
+       HERO BANNER SECTION
+       ==================================================================== -->
+  <section class="hero-section">
+    <div class="hero-overlay-pattern"></div>
+    <div class="container hero-content">
+      <div class="hero-status-pill">
+        <span class="pulse-dot"></span>
+        <span id="tournamentStatusText">Ongoing Championship</span>
+        &bull;
+        <span id="heroAcademicYear">AY 2026-2027</span>
+      </div>
+
+      <h1 class="hero-title">MVJ INTERDEPARTMENT SPORTS</h1>
+      <div class="hero-tagline" id="heroTagline">"ONE COLLEGE. MULTIPLE DEPARTMENTS. ONE CHAMPION."</div>
+      <p class="hero-subtitle" id="heroSubtitle">
+        Celebrating sportsmanship, teamwork and interdepartmental excellence at MVJ College of Engineering.
+      </p>
+
+      <div class="hero-btn-group">
+        <a href="sports.html" class="btn btn-gold">
+          <i class="fa-solid fa-medal"></i> Explore Sports
+        </a>
+        <a href="#scoreboardSection" class="btn btn-outline-white">
+          <i class="fa-solid fa-ranking-star"></i> View Scoreboard
+        </a>
+        <a href="fixtures.html" class="btn btn-outline-white">
+          <i class="fa-solid fa-calendar-check"></i> Live Fixtures
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       TOURNAMENT STATISTICS STRIP (DYNAMIC METRICS)
+       ==================================================================== -->
+  <section class="stats-strip">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon blue"><i class="fa-solid fa-building-columns"></i></div>
+          <div class="stat-value" id="statTotalDepts">8</div>
+          <div class="stat-label">Total Departments</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon gold"><i class="fa-solid fa-trophy"></i></div>
+          <div class="stat-value" id="statTotalSports">10</div>
+          <div class="stat-label">Total Sports</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon blue"><i class="fa-solid fa-gamepad"></i></div>
+          <div class="stat-value" id="statTotalMatches">24</div>
+          <div class="stat-label">Total Matches</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="stat-value" id="statCompletedMatches">16</div>
+          <div class="stat-label">Completed</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon blue"><i class="fa-solid fa-clock"></i></div>
+          <div class="stat-value" id="statUpcomingMatches">6</div>
+          <div class="stat-label">Upcoming</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon red"><i class="fa-solid fa-satellite-dish"></i></div>
+          <div class="stat-value" id="statLiveMatches">2</div>
+          <div class="stat-label">Live Matches</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       DEPARTMENT SCOREBOARD & PODIUM SECTION
+       ==================================================================== -->
+  <section class="section" id="scoreboardSection">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-badge"><i class="fa-solid fa-crown"></i> Overall Standings</span>
+        <h2 class="section-title">Department Championship Leaderboard</h2>
+        <p class="section-subtitle">
+          Real-time points table and medal tallies across all interdepartment competitions. Ranked automatically by highest points and gold medal count.
+        </p>
+      </div>
+
+      <!-- Top 3 Podium -->
+      <div class="podium-container" id="podiumContainer">
+        <!-- Dynamically rendered by main.js -->
+      </div>
+
+      <!-- Full Leaderboard Table -->
+      <div class="leaderboard-card">
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Rank</th>
+                <th>Department</th>
+                <th>Total Points</th>
+                <th>Gold 🥇</th>
+                <th>Silver 🥈</th>
+                <th>Bronze 🥉</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardTableBody">
+              <!-- Dynamically populated from database -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       LATEST MATCH RESULTS & LIVE ACTION
+       ==================================================================== -->
+  <section class="section" style="background-color: #FFFFFF; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-badge"><i class="fa-solid fa-flag-checkered"></i> Recent Action</span>
+        <h2 class="section-title">Latest Match Results</h2>
+        <p class="section-subtitle">Official final scores and winners from recent interdepartment fixtures.</p>
+      </div>
+
+      <div class="match-grid" id="latestResultsContainer">
+        <!-- Dynamically populated from database -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       UPCOMING FIXTURES
+       ==================================================================== -->
+  <section class="section">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-badge"><i class="fa-regular fa-calendar-check"></i> Next Up</span>
+        <h2 class="section-title">Upcoming Fixtures</h2>
+        <p class="section-subtitle">Don't miss the upcoming clashes between rival departments on the college grounds.</p>
+      </div>
+
+      <div class="match-grid" id="upcomingMatchesContainer">
+        <!-- Dynamically populated from database -->
+      </div>
+
+      <div style="text-align: center; margin-top: 36px;">
+        <a href="fixtures.html" class="btn btn-primary">
+          <span>View Complete Tournament Fixtures</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       TOURNAMENT ANNOUNCEMENTS
+       ==================================================================== -->
+  <section class="section" id="announcementsSection" style="background-color: #FFFFFF; border-top: 1px solid var(--border-color);">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-badge"><i class="fa-solid fa-bullhorn"></i> Official Notices</span>
+        <h2 class="section-title">Tournament Updates & Announcements</h2>
+        <p class="section-subtitle">Important schedule changes, guidelines and updates from the MVJ Sports Department.</p>
+      </div>
+
+      <div class="announcement-grid" id="announcementsContainer">
+        <!-- Dynamically populated from database -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       FOOTER
+       ==================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo-row">
+            <img src="assets/images/mvj-logo.png" alt="MVJCE Logo" class="footer-logo-img">
+            <div>
+              <div class="footer-brand-title">MVJ INTERDEPARTMENT SPORTS</div>
+              <div class="footer-brand-sub">MVJ COLLEGE OF ENGINEERING</div>
+            </div>
+          </div>
+          <p class="footer-desc">
+            Official digital tournament and sports management platform of MVJ College of Engineering, Near ITPB, Channasandra, Kadugodi, Bengaluru, Karnataka 560067.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="sports.html">All Sports</a></li>
+            <li><a href="fixtures.html">Fixtures & Brackets</a></li>
+            <li><a href="#scoreboardSection">Department Standings</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Major Sports</h4>
+          <ul class="footer-links">
+            <li><a href="fixtures.html?sport=cricket">Cricket</a></li>
+            <li><a href="fixtures.html?sport=football">Football</a></li>
+            <li><a href="fixtures.html?sport=volleyball">Volleyball</a></li>
+            <li><a href="fixtures.html?sport=basketball">Basketball</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Portal Access</h4>
+          <p style="font-size:0.85rem; line-height:1.6; margin-bottom:12px;">
+            Students and guests can access all tournament schedules and results freely without any login.
+          </p>
+          <a href="admin/login.html" class="admin-nav-btn" style="border-color:rgba(255,255,255,0.4); color:#FFFFFF;">
+            <i class="fa-solid fa-lock"></i> Authorized Admin Access
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026-2027 MVJ College of Engineering. All rights reserved. Interdepartment Sports Committee.</div>
+        <div>
+          <a href="admin/login.html" class="admin-footer-link">
+            <i class="fa-solid fa-shield-halved"></i> Admin Portal
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

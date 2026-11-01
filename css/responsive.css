@@ -1,0 +1,242 @@
+/**
+ * MVJ INTERDEPARTMENT SPORTS - MOBILE-FIRST RESPONSIVE STYLES
+ * Optimizations for Android, iPhone, iPad, tablets & desktops
+ * MVJ College of Engineering
+ */
+
+/* Breakpoint: Tablets and below (< 1024px) */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .analytics-section {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-row-secondary {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+}
+
+/* Breakpoint: Mobile screens & small tablets (< 768px) */
+@media (max-width: 768px) {
+  /* Navigation */
+  .mobile-toggle {
+    display: block;
+  }
+
+  .nav-menu {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    flex-direction: column;
+    padding: 20px;
+    border-bottom: 2px solid var(--blue-primary);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    transform: translateY(-150%);
+    transition: transform 0.3s ease;
+    z-index: 999;
+  }
+
+  .nav-menu.open {
+    transform: translateY(0);
+  }
+
+  .nav-item {
+    width: 100%;
+  }
+
+  .nav-item a {
+    padding: 12px 16px;
+    width: 100%;
+    font-size: 1.05rem;
+  }
+
+  .admin-nav-btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+    padding: 12px;
+  }
+
+  /* Header Branding on Mobile */
+  .brand-logo-img {
+    width: 44px;
+    height: 44px;
+  }
+
+  .brand-title-mvj {
+    font-size: 0.98rem;
+  }
+
+  .brand-subtitle-college {
+    font-size: 0.65rem;
+  }
+
+  /* Hero Section */
+  .hero-section {
+    padding: 50px 0 45px;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .hero-tagline {
+    font-size: 1.05rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+
+  .hero-btn-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-btn-group .btn {
+    width: 100%;
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 16px 12px;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  /* Podium */
+  .podium-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .podium-step {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .podium-step.rank-1 { order: 1; }
+  .podium-step.rank-2 { order: 2; }
+  .podium-step.rank-3 { order: 3; }
+
+  .podium-block {
+    height: 60px !important;
+    border-radius: var(--radius-md) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+  }
+
+  /* Match cards */
+  .match-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Fixtures Grand Final */
+  .grand-final-showcase {
+    padding: 24px 16px;
+  }
+
+  .final-matchup-container {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .final-vs-hub {
+    padding: 10px 0;
+  }
+
+  .final-team-circle {
+    width: 64px;
+    height: 64px;
+    font-size: 1.25rem;
+  }
+
+  .final-team-name {
+    font-size: 1.35rem;
+  }
+
+  /* Admin Layout */
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+
+  .admin-sidebar.open {
+    transform: translateX(0);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .admin-main {
+    margin-left: 0;
+  }
+
+  .admin-mobile-toggle {
+    display: block;
+  }
+
+  .admin-topbar {
+    padding: 0 16px;
+  }
+
+  .admin-content {
+    padding: 16px;
+  }
+
+  .admin-user-info {
+    display: none;
+  }
+
+  .db-status-pill {
+    display: none;
+  }
+
+  /* Footer */
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+}
+
+/* Extra small devices (< 480px) */
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .sports-filter-bar, .fixtures-toolbar {
+    padding: 12px;
+  }
+
+  .filter-pills {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 6px;
+  }
+}

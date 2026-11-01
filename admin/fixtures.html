@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Fixtures & Results | MVJ INTERDEPARTMENT SPORTS</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="admin-layout">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand">
+        <img src="../assets/images/mvj-logo.png" alt="MVJ College Logo" class="sidebar-logo">
+        <div class="sidebar-title-group">
+          <div class="sidebar-title">MVJ SPORTS</div>
+          <div class="sidebar-subtitle">ADMIN CONTROL PORTAL</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard Overview</span>
+        </a>
+        <a href="departments.html" class="sidebar-link">
+          <i class="fa-solid fa-building-columns"></i>
+          <span>Manage Departments</span>
+        </a>
+        <a href="departments.html#quickScoresCard" class="sidebar-link">
+          <i class="fa-solid fa-table-list"></i>
+          <span>Department Scores</span>
+        </a>
+        <a href="sports.html" class="sidebar-link">
+          <i class="fa-solid fa-medal"></i>
+          <span>Manage Sports</span>
+        </a>
+        <a href="fixtures.html" class="sidebar-link active">
+          <i class="fa-solid fa-calendar-days"></i>
+          <span>Manage Fixtures</span>
+        </a>
+        <a href="fixtures.html?stage=Semi-Final" class="sidebar-link">
+          <i class="fa-solid fa-fire"></i>
+          <span>Semi-Finals</span>
+        </a>
+        <a href="fixtures.html?stage=Grand+Final" class="sidebar-link">
+          <i class="fa-solid fa-trophy"></i>
+          <span>Grand Final</span>
+        </a>
+        <a href="settings.html#announcementsSection" class="sidebar-link">
+          <i class="fa-solid fa-bullhorn"></i>
+          <span>Announcements</span>
+        </a>
+        <a href="settings.html" class="sidebar-link">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Tournament Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-logout-btn" id="adminLogoutBtn">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Log Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div class="admin-topbar-left">
+          <button class="admin-mobile-toggle" id="adminMobileToggle" aria-label="Toggle Sidebar">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="admin-page-title">Manage Tournament Fixtures & Live Scores</h1>
+        </div>
+
+        <div class="admin-topbar-right">
+          <a href="../fixtures.html" target="_blank" class="btn-view-site">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> View Public Fixtures
+          </a>
+          <div class="admin-user-pill">
+            <div class="admin-avatar"><i class="fa-solid fa-user-shield"></i></div>
+            <div class="admin-user-info">
+              <span class="admin-name" id="adminUserName">Sports Director</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="admin-content">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h2 class="admin-card-title">All Tournament Matches</h2>
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">
+                Schedule matches, publish live scores, and update final championship outcomes.
+              </p>
+            </div>
+            <button class="btn btn-primary" id="openAddMatchModalBtn">
+              <i class="fa-solid fa-plus"></i> + ADD NEW MATCH
+            </button>
+          </div>
+
+          <!-- Filter Toolbar -->
+          <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:20px; background:#F8FAFC; padding:14px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+            <div style="flex:1; min-width:180px;">
+              <label class="form-label" style="font-size:0.75rem; text-transform:uppercase;">Filter by Sport</label>
+              <select id="filterSportSelect" class="form-select" style="padding:6px 10px; font-size:0.88rem;">
+                <option value="All">All Sports</option>
+              </select>
+            </div>
+
+            <div style="flex:1; min-width:180px;">
+              <label class="form-label" style="font-size:0.75rem; text-transform:uppercase;">Filter by Tournament Stage</label>
+              <select id="filterStageSelect" class="form-select" style="padding:6px 10px; font-size:0.88rem;">
+                <option value="All">All Stages</option>
+                <option value="Regular">Regular Matches</option>
+                <option value="Semi-Final">Semi-Finals</option>
+                <option value="Grand Final">The Grand Final</option>
+              </select>
+            </div>
+
+            <div style="flex:1; min-width:180px;">
+              <label class="form-label" style="font-size:0.75rem; text-transform:uppercase;">Filter by Match Status</label>
+              <select id="filterStatusSelect" class="form-select" style="padding:6px 10px; font-size:0.88rem;">
+                <option value="All">All Statuses</option>
+                <option value="Live">Live Now</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Fixtures Table -->
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Sport & Stage</th>
+                  <th>Teams</th>
+                  <th>Score</th>
+                  <th>Status</th>
+                  <th>Date & Venue</th>
+                  <th>Winner</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="matchesTableBody">
+                <!-- Dynamically populated by admin-fixtures.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: + ADD NEW MATCH (REUSABLE TEMPLATE)
+       ==================================================================== -->
+  <div class="modal-backdrop" id="addMatchModal">
+    <div class="modal-box" style="max-width:620px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-calendar-plus"></i> + ADD NEW MATCH</h3>
+        <button class="modal-close-btn modal-close-trigger"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="addMatchForm">
+        <div class="modal-body">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="addMatchSport">Sport *</label>
+              <select id="addMatchSport" class="form-select" required></select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="addMatchStage">Tournament Stage *</label>
+              <select id="addMatchStage" class="form-select" required>
+                <option value="Regular" selected>Regular Match</option>
+                <option value="Semi-Final">Semi-Final</option>
+                <option value="Grand Final">Grand Final</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addMatchStageLabel">Stage Label</label>
+            <input type="text" id="addMatchStageLabel" class="form-input" placeholder="e.g. Match 1, Semi-Final 1, Championship Final">
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="addMatchTeamA">Team A (Department) *</label>
+              <select id="addMatchTeamA" class="form-select" required></select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="addMatchTeamB">Team B (Department) *</label>
+              <select id="addMatchTeamB" class="form-select" required></select>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="addMatchDate">Match Date *</label>
+              <input type="date" id="addMatchDate" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="addMatchTime">Match Time *</label>
+              <input type="text" id="addMatchTime" class="form-input" placeholder="e.g. 10:00 AM" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addMatchVenue">Venue *</label>
+            <input type="text" id="addMatchVenue" class="form-input" placeholder="e.g. Main Cricket Ground / Indoor Stadium" value="MVJ College Ground" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label" for="addMatchStatus">Match Status</label>
+              <select id="addMatchStatus" class="form-select">
+                <option value="Upcoming" selected>Upcoming</option>
+                <option value="Live">Live Now</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="addMatchScoreA">Team A Score</label>
+              <input type="text" id="addMatchScoreA" class="form-input" placeholder="e.g. 142/4 or 2">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="addMatchScoreB">Team B Score</label>
+              <input type="text" id="addMatchScoreB" class="form-input" placeholder="e.g. 118/8 or 1">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="addMatchWinner">Winner (Department)</label>
+              <input type="text" id="addMatchWinner" class="form-input" placeholder="e.g. CSE">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="addMatchResult">Match Result Statement</label>
+              <input type="text" id="addMatchResult" class="form-input" placeholder="e.g. CSE won by 24 runs">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close-trigger">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Match</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: QUICK SCORE & RESULT UPDATE
+       ==================================================================== -->
+  <div class="modal-backdrop" id="quickResultModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title"><i class="fa-solid fa-square-poll-vertical"></i> Update Score & Result</h3>
+          <div id="resultMatchHeading" style="font-size:0.82rem; color:var(--text-secondary); margin-top:2px;"></div>
+        </div>
+        <button class="modal-close-btn modal-close-trigger"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="quickResultForm">
+        <input type="hidden" id="resultMatchId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="resultStatus">Match Status</label>
+            <select id="resultStatus" class="form-select">
+              <option value="Upcoming">Upcoming (Not Started)</option>
+              <option value="Live">Live Now</option>
+              <option value="Completed">Match Completed</option>
+            </select>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" id="resultLabelA" for="resultScoreA">Score Team A</label>
+              <input type="text" id="resultScoreA" class="form-input" placeholder="e.g. 142/4 or 3">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" id="resultLabelB" for="resultScoreB">Score Team B</label>
+              <input type="text" id="resultScoreB" class="form-input" placeholder="e.g. 120/8 or 1">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="resultWinner">Select Winner</label>
+            <select id="resultWinner" class="form-select">
+              <option value="">-- No Winner Yet --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="resultStatement">Official Result Note</label>
+            <input type="text" id="resultStatement" class="form-input" placeholder="e.g. CSE won by 24 runs or Won on penalties 4-2">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close-trigger">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Score & Publish</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: FULL EDIT MATCH
+       ==================================================================== -->
+  <div class="modal-backdrop" id="editMatchModal">
+    <div class="modal-box" style="max-width:620px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-pen-to-square"></i> Edit Match Details</h3>
+        <button class="modal-close-btn modal-close-trigger"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="editMatchForm">
+        <input type="hidden" id="editMatchId">
+        <div class="modal-body">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="editMatchSport">Sport *</label>
+              <select id="editMatchSport" class="form-select" required></select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="editMatchStage">Tournament Stage *</label>
+              <select id="editMatchStage" class="form-select" required>
+                <option value="Regular">Regular Match</option>
+                <option value="Semi-Final">Semi-Final</option>
+                <option value="Grand Final">Grand Final</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="editMatchStageLabel">Stage Label</label>
+            <input type="text" id="editMatchStageLabel" class="form-input">
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="editMatchTeamA">Team A *</label>
+              <select id="editMatchTeamA" class="form-select" required></select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="editMatchTeamB">Team B *</label>
+              <select id="editMatchTeamB" class="form-select" required></select>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="editMatchDate">Match Date *</label>
+              <input type="date" id="editMatchDate" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="editMatchTime">Match Time *</label>
+              <input type="text" id="editMatchTime" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="editMatchVenue">Venue *</label>
+            <input type="text" id="editMatchVenue" class="form-input" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label" for="editMatchStatus">Status</label>
+              <select id="editMatchStatus" class="form-select">
+                <option value="Upcoming">Upcoming</option>
+                <option value="Live">Live Now</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="editMatchScoreA">Score Team A</label>
+              <input type="text" id="editMatchScoreA" class="form-input">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="editMatchScoreB">Score Team B</label>
+              <input type="text" id="editMatchScoreB" class="form-input">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:16px;">
+            <div class="form-group">
+              <label class="form-label" for="editMatchWinner">Winner</label>
+              <input type="text" id="editMatchWinner" class="form-input">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="editMatchResult">Result Note</label>
+              <input type="text" id="editMatchResult" class="form-input">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close-trigger">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Match</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/admin-fixtures.js"></script>
+</body>
+</html>

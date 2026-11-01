@@ -1,0 +1,308 @@
+/**
+ * MVJ INTERDEPARTMENT SPORTS - FIXTURES STYLES
+ * Matches, Semi-Finals, Grand Final showcase
+ * MVJ College of Engineering
+ */
+
+.fixtures-header {
+  background: linear-gradient(135deg, #174EA6 0%, #1e5fc2 100%);
+  color: #FFFFFF;
+  padding: 40px 0 60px;
+  position: relative;
+}
+
+.fixtures-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.btn-back-sports {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 700;
+  backdrop-filter: blur(4px);
+}
+
+.btn-back-sports:hover {
+  background: #FFFFFF;
+  color: var(--blue-primary);
+}
+
+.fixtures-title-block {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.sport-active-title {
+  font-family: var(--font-heading);
+  font-size: 2.8rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.sport-active-desc {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+/* Sports Selector Tabs / Bar */
+.sport-selector-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 4px 14px;
+  scrollbar-width: thin;
+}
+
+.sport-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+  color: #FFFFFF;
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.sport-chip:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.sport-chip.active {
+  background: #FFFFFF;
+  color: var(--blue-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Fixtures Filter Bar */
+.fixtures-toolbar {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-top: -30px;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: var(--shadow-md);
+  flex-wrap: wrap;
+}
+
+.filter-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border: 1px solid var(--border-color);
+  background: #FFFFFF;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.filter-btn:hover {
+  border-color: var(--blue-secondary);
+  color: var(--blue-primary);
+}
+
+.filter-btn.active {
+  background: var(--blue-primary);
+  color: #FFFFFF;
+  border-color: var(--blue-primary);
+}
+
+/* SECTION HEADINGS IN FIXTURES */
+.stage-section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-heading);
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.stage-section-title i {
+  color: var(--blue-primary);
+}
+
+/* ====================================================================
+   SECTION C: THE GRAND FINAL (SHOWCASE CARD)
+   ==================================================================== */
+.grand-final-showcase {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 50%, #FFFFFF 100%);
+  border: 2px solid var(--gold);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-gold);
+  padding: 36px 30px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 50px;
+}
+
+.grand-final-showcase::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(229, 160, 0, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.final-trophy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: #FFFFFF;
+  padding: 6px 18px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(217, 119, 6, 0.25);
+}
+
+.final-matchup-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.final-team-block {
+  text-align: center;
+  flex: 1;
+}
+
+.final-team-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 3px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--text-main);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.final-team-name {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.final-score-box {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--blue-primary);
+  margin-top: 6px;
+}
+
+.final-vs-hub {
+  text-align: center;
+  padding: 0 20px;
+}
+
+.final-trophy-icon {
+  font-size: 2.8rem;
+  color: var(--gold);
+  filter: drop-shadow(0 4px 10px rgba(229, 160, 0, 0.4));
+  margin-bottom: 8px;
+}
+
+.final-champion-banner {
+  background: linear-gradient(135deg, #16A36A 0%, #15803D 100%);
+  color: #FFFFFF;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  margin-top: 24px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 14px rgba(22, 163, 106, 0.25);
+}
+
+/* ====================================================================
+   SECTION B: SEMI-FINALS (DISTINCT CARD DESIGN)
+   ==================================================================== */
+.semi-finals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+  margin-bottom: 50px;
+}
+
+.semi-final-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-md);
+  border: 1.5px solid #CBD5E1;
+  border-left: 6px solid var(--blue-secondary);
+  box-shadow: var(--shadow-sm);
+  padding: 22px;
+  transition: var(--transition);
+}
+
+.semi-final-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--blue-primary);
+}
+
+.semi-final-tag {
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: var(--blue-light);
+  color: var(--blue-primary);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}

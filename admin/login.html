@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | MVJ INTERDEPARTMENT SPORTS</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #F0F4FA 0%, #E2E8F0 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+      background: #FFFFFF;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 15px 35px -5px rgba(23, 78, 166, 0.15);
+      padding: 40px 32px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-logo-wrap {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .login-logo-img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      margin: 0 auto 12px;
+    }
+
+    .login-brand-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--blue-primary);
+      line-height: 1.2;
+    }
+
+    .login-brand-subtitle {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .toggle-pwd-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px;
+    }
+
+    .login-alert {
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .login-alert.error {
+      background: var(--error-light);
+      border: 1px solid #FCA5A5;
+      color: var(--error);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .demo-credentials-box {
+      margin-top: 24px;
+      padding: 14px 16px;
+      background: #F8FAFC;
+      border: 1.5px dashed var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    .demo-btn-autofill {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      padding: 6px;
+      background: var(--blue-light);
+      color: var(--blue-primary);
+      border: 1px solid rgba(23, 78, 166, 0.2);
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .demo-btn-autofill:hover {
+      background: #d8e6fc;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="login-logo-wrap">
+      <img src="../assets/images/mvj-logo.png" alt="MVJ College of Engineering" class="login-logo-img">
+      <div class="login-brand-title">MVJ INTERDEPARTMENT SPORTS</div>
+      <div class="login-brand-subtitle">MVJ COLLEGE OF ENGINEERING &bull; ADMIN PORTAL</div>
+    </div>
+
+    <!-- Alert Box -->
+    <div id="loginAlertBox" class="login-alert"></div>
+
+    <form id="adminLoginForm">
+      <div class="form-group">
+        <label for="adminEmail" class="form-label">
+          <i class="fa-solid fa-envelope" style="margin-right:4px;"></i> Admin ID / Email
+        </label>
+        <input 
+          type="text" 
+          id="adminEmail" 
+          class="form-input" 
+          placeholder="enter the username" 
+          required 
+          autocomplete="username"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="adminPassword" class="form-label">
+          <i class="fa-solid fa-lock" style="margin-right:4px;"></i> Password
+        </label>
+        <div class="password-wrapper">
+          <input 
+            type="password" 
+            id="adminPassword" 
+            class="form-input" 
+            placeholder="Enter password" 
+            required 
+            autocomplete="current-password"
+          >
+          <button type="button" class="toggle-pwd-btn" id="togglePasswordBtn" aria-label="Toggle password visibility">
+            <i class="fa-solid fa-eye" id="togglePasswordIcon"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" id="loginSubmitBtn" class="btn btn-primary" style="width:100%; margin-top:12px;">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Dashboard
+      </button>
+    </form>
+
+    <div style="text-align:center; margin-top:20px;">
+      <a href="../index.html" style="font-size:0.85rem; font-weight:600; color:var(--text-secondary);">
+        <i class="fa-solid fa-arrow-left"></i> Return to Public Student Portal
+      </a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+   
+document.addEventListener('DOMContentLoaded', async () => {
+
+    // 1. Check whether an authenticated admin session already exists
+    const alreadyLoggedIn =
+        await window.MVJ_AUTH.redirectIfAuthenticated();
+
+    if (alreadyLoggedIn) {
+        return;
+    }
+
+    // 2. Get the login form elements
+    const form = document.getElementById('adminLoginForm');
+    const emailInput = document.getElementById('adminEmail');
+    const passwordInput = document.getElementById('adminPassword');
+    const toggleBtn = document.getElementById('togglePasswordBtn');
+    const toggleIcon = document.getElementById('togglePasswordIcon');
+    const alertBox = document.getElementById('loginAlertBox');
+    const submitBtn = document.getElementById('loginSubmitBtn');
+
+    // 3. Password visibility toggle
+    toggleBtn.addEventListener('click', () => {
+        const isPassword = passwordInput.type === 'password';
+
+        passwordInput.type = isPassword ? 'text' : 'password';
+
+        toggleIcon.classList.toggle('fa-eye', !isPassword);
+        toggleIcon.classList.toggle('fa-eye-slash', isPassword);
+    });
+
+    // 4. Handle login submission
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        alertBox.style.display = 'none';
+        submitBtn.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+
+        submitBtn.disabled = true;
+
+        try {
+            const result = await window.MVJ_AUTH.login(
+                emailInput.value,
+                passwordInput.value
+            );
+
+            if (result.success) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            alertBox.className = 'login-alert error';
+            alertBox.textContent =
+                result.message || 'Invalid email or password.';
+
+            alertBox.style.display = 'flex';
+
+        } catch (err) {
+
+            alertBox.className = 'login-alert error';
+            alertBox.textContent =
+                'Authentication error: ' + (err.message || 'Please try again.');
+
+            alertBox.style.display = 'flex';
+
+        } finally {
+            submitBtn.innerHTML =
+                '<i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Dashboard';
+
+            submitBtn.disabled = false;
+        }
+    });
+});
+
+  </script>
+</body>
+</html>
