@@ -152,20 +152,24 @@
     // -------------------------------------------------------------
     // DEPARTMENTS
     // -------------------------------------------------------------
-    async getDepartments() {
-      if (this.isSupabaseActive && this.supabase) {
-        try {
-          const { data, error } = await this.supabase
-            .from('departments')
-            .select('*')
-            .order('points', { ascending: false });
-          if (!error && data && data.length > 0) {
-            return this.sortDepartments(data);
-          }
-        } catch (err) {
-          console.warn('Supabase getDepartments error, using local:', err);
-        }
-      }
+    
+async getDepartments() {
+    if (!this.isSupabaseActive || !this.supabase) {
+        throw new Error('Supabase is not connected.');
+    }
+
+    const { data, error } = await this.supabase
+        .from('departments')
+        .select('*')
+        .order('points', { ascending: false });
+
+    if (error) {
+        console.error('Failed to fetch departments:', error);
+        throw error;
+    }
+
+    return this.sortDepartments(data || []);
+}
 
       const raw = localStorage.getItem(STORAGE_KEYS.DEPARTMENTS);
       const list = raw ? JSON.parse(raw) : window.MVJ_CONFIG.DEPARTMENTS;
@@ -246,20 +250,25 @@
     // -------------------------------------------------------------
     // SPORTS
     // -------------------------------------------------------------
-    async getSports() {
-      if (this.isSupabaseActive && this.supabase) {
-        try {
-          const { data, error } = await this.supabase
-            .from('sports')
-            .select('*')
-            .order('name', { ascending: true });
-          if (!error && data && data.length > 0) {
-            return data;
-          }
-        } catch (err) {
-          console.warn('Supabase getSports error:', err);
-        }
-      }
+   
+async getSports() {
+    if (!this.isSupabaseActive || !this.supabase) {
+        throw new Error('Supabase is not connected.');
+    }
+
+    const { data, error } = await this.supabase
+        .from('sports')
+        .select('*')
+        .order('name', { ascending: true });
+
+    if (error) {
+        console.error('Failed to fetch sports:', error);
+        throw error;
+    }
+
+    return data || [];
+}
+
 
       const raw = localStorage.getItem(STORAGE_KEYS.SPORTS);
       return raw ? JSON.parse(raw) : window.MVJ_CONFIG.SPORTS;
