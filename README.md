@@ -63,6 +63,12 @@ The platform provides two completely separate, synchronized experiences:
 
 ---
 
+## 🔐 Administrative Credentials
+
+- **Admin Login URL:** `admin/login.html`
+- **Default Email:** `vinayhosur2604@gmail.com`
+- **Default Password:** `vinay@2604`
+- An interactive **"Auto-fill Authorized Credentials"** button is also provided on the login page for testing.
 
 ---
 

@@ -68,8 +68,10 @@
 
     getSupabaseCredentials() {
       const config = window.MVJ_CONFIG || {};
-      const url = (config.SUPABASE_URL || localStorage.getItem('MVJ_SUPABASE_URL') || '').trim();
-      const key = (config.SUPABASE_ANON_KEY || localStorage.getItem('MVJ_SUPABASE_ANON_KEY') || '').trim();
+      const savedUrl = (localStorage.getItem('MVJ_SUPABASE_URL') || '').trim();
+      const savedKey = (localStorage.getItem('MVJ_SUPABASE_ANON_KEY') || '').trim();
+      const url = savedUrl || (config.SUPABASE_URL || '').trim();
+      const key = savedKey || (config.SUPABASE_ANON_KEY || '').trim();
       return { url, key };
     }
 
@@ -153,7 +155,6 @@
     // DEPARTMENTS
     // -------------------------------------------------------------
     
-
 async getDepartments() {
     if (!this.isSupabaseActive || !this.supabase) {
         throw new Error('Supabase is not connected.');
@@ -172,16 +173,15 @@ async getDepartments() {
     return this.sortDepartments(data || []);
 }
 
-// Tie-breaker: Points -> Gold -> Silver -> Bronze
-sortDepartments(list) {
-    return [...list].sort((a, b) => {
+    // Tie-breaker: Points -> Gold -> Silver -> Bronze
+    sortDepartments(list) {
+      return [...list].sort((a, b) => {
         if (b.points !== a.points) return b.points - a.points;
         if (b.gold !== a.gold) return b.gold - a.gold;
         if (b.silver !== a.silver) return b.silver - a.silver;
         return (b.bronze || 0) - (a.bronze || 0);
-    });
-}
-
+      });
+    }
 
     async addDepartment(dept) {
       const newDept = {
@@ -247,7 +247,7 @@ sortDepartments(list) {
     // -------------------------------------------------------------
     // SPORTS
     // -------------------------------------------------------------
-
+    
 async getSports() {
     if (!this.isSupabaseActive || !this.supabase) {
         throw new Error('Supabase is not connected.');
@@ -265,7 +265,6 @@ async getSports() {
 
     return data || [];
 }
-
 
 
     async getSportBySlug(slug) {

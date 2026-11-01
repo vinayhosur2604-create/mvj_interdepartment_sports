@@ -200,6 +200,10 @@ function setupSettingsForm() {
     if (supabaseUrl) localStorage.setItem('MVJ_SUPABASE_URL', supabaseUrl);
     if (supabaseKey) localStorage.setItem('MVJ_SUPABASE_ANON_KEY', supabaseKey);
 
+    if (window.MVJ_DB && typeof window.MVJ_DB.initSupabaseClient === 'function') {
+      window.MVJ_DB.initSupabaseClient();
+    }
+
     try {
       await window.MVJ_DB.updateSettings({
         tournament_name,
