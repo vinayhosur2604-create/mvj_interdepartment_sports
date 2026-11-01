@@ -153,6 +153,7 @@
     // DEPARTMENTS
     // -------------------------------------------------------------
     
+
 async getDepartments() {
     if (!this.isSupabaseActive || !this.supabase) {
         throw new Error('Supabase is not connected.');
@@ -171,20 +172,16 @@ async getDepartments() {
     return this.sortDepartments(data || []);
 }
 
-      const raw = localStorage.getItem(STORAGE_KEYS.DEPARTMENTS);
-      const list = raw ? JSON.parse(raw) : window.MVJ_CONFIG.DEPARTMENTS;
-      return this.sortDepartments(list);
-    }
-
-    // Tie-breaker: Points -> Gold -> Silver -> Bronze
-    sortDepartments(list) {
-      return [...list].sort((a, b) => {
+// Tie-breaker: Points -> Gold -> Silver -> Bronze
+sortDepartments(list) {
+    return [...list].sort((a, b) => {
         if (b.points !== a.points) return b.points - a.points;
         if (b.gold !== a.gold) return b.gold - a.gold;
         if (b.silver !== a.silver) return b.silver - a.silver;
         return (b.bronze || 0) - (a.bronze || 0);
-      });
-    }
+    });
+}
+
 
     async addDepartment(dept) {
       const newDept = {
